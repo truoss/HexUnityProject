@@ -2,16 +2,11 @@
 using System.Collections;
 
 //Based of http://www.redblobgames.com/grids/hexagons/
-public class Hexagon : MonoBehaviour
+public class Hexagon
 {
-    public MeshFilter meshfilter;
+    //mesh = CreateHexagonMesh2D(true, 1.0f);
 
-    void Start()
-    {
-        meshfilter.mesh = CreateHexagonMesh2D(true, 1.0f);
-    }
-
-    public Mesh CreateHexagonMesh2D(bool isPointyTopped, float size)
+    public static Mesh CreateHexagonMesh2D(bool isPointyTopped, float size)
     {
         //center + 6 edges + 6 corners
         Vector3 center = Vector3.zero;
@@ -25,7 +20,7 @@ public class Hexagon : MonoBehaviour
         vertices[0] = center;
         for (int i = 1; i < vertices.Length; i++)
         {
-            vertices[i] = GetHexCorner(center, size, i);
+            vertices[i] = GetHexCorner(center, size, i, isPointyTopped);
             //Debug.LogWarning(vertices[i].ToString("f4"));
             normals[i] = -Vector3.forward;
         }
@@ -62,11 +57,20 @@ public class Hexagon : MonoBehaviour
         return mesh;
     }
 
-    Vector3 GetHexCorner(Vector3 center, float size, int i)
+    static Vector3 GetHexCorner(Vector3 center, float size, int i, bool isPointyTopped)
     {
-        float angle_deg = 60 * i + 30;
-        float angle_rad = Mathf.PI / 180 * angle_deg;
-
+        float angle_deg;
+        float angle_rad;
+        if (isPointyTopped)
+        {
+            angle_deg = 60 * i;
+            angle_rad = Mathf.PI / 180 * angle_deg;
+        }
+        else
+        {
+            angle_deg = 60 * i + 30;
+            angle_rad = Mathf.PI / 180 * angle_deg;
+        }
         return new Vector3(center.x + size * Mathf.Cos(angle_rad), center.y, center.z + size * Mathf.Sin(angle_rad));
     }
 }
